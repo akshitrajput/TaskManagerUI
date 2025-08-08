@@ -2,7 +2,8 @@
 A Flutter-based task management application with local storage and intuitive task status tracking.
 
 <h2>📱 Demo</h2>
-<p align="center"> <img src="screenshots/app_demo.gif" width="250" alt="App Demo"/> </p>
+[![Demo Preview](Taskmanager_vid.mp4)](Taskmanager_vid.mp4)
+
 <h2>🛠️ Tech Stack</h2>
 <p align="center"> <img src="https://img.shields.io/badge/Flutter-02569B?style=for-the-badge&logo=flutter&logoColor=white" alt="Flutter"/> <img src="https://img.shields.io/badge/Dart-0175C2?style=for-the-badge&logo=dart&logoColor=white" alt="Dart"/> <img src="https://img.shields.io/badge/SharedPreferences-FF6B6B?style=for-the-badge&logo=database&logoColor=white" alt="Local Storage"/> </p>
 <h2>✨ Features</h2>
@@ -21,13 +22,13 @@ Color-coded status indicators
 ## 🚀 Setup
 
 ```bash
-git clone <repo-url>
+git clone https://github.com/akshitrajput/TaskManagerUI.git
 cd taskmanager
 flutter pub get
 flutter run
 
-## 📁 Structure
-text
+📁 Structure
+
 lib/
 ├── models/
 │   └── task.dart
