@@ -1,122 +1,265 @@
 import 'package:flutter/material.dart';
-import '../models/task_model.dart';
-import '../utils/date_utils.dart';
-import 'status_badge.dart';
+import '../models/task.dart';
+import '../utils/date_formatter.dart';
 
 class TaskCard extends StatelessWidget {
   final Task task;
-  final VoidCallback onStart;
-  final VoidCallback onComplete;
-  final VoidCallback onEditDate;
+  final VoidCallback? onStartTask;
+  final VoidCallback? onMarkComplete;
+  final Function(DateTime)? onDateChanged;
 
   const TaskCard({
-    super.key,
+    Key? key,
     required this.task,
-    required this.onStart,
-    required this.onComplete,
-    required this.onEditDate,
-  });
-
-  Color getStatusColor() {
-    final status = calculateDueStatus(task.startDate, task.status);
-    if (status.contains("Overdue")) return Colors.red;
-    if (status.contains("Due")) return Colors.orange;
-    return Colors.green;
-  }
+    this.onStartTask,
+    this.onMarkComplete,
+    this.onDateChanged,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final statusText = calculateDueStatus(task.startDate, task.status);
-
-    return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-      elevation: 2,
-      child: Padding(
-        padding: const EdgeInsets.all(12),
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 2),
+      child: IntrinsicHeight(
         child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const Icon(Icons.assignment, size: 28, color: Colors.indigo),
-            const SizedBox(width: 12),
+            // Left status indicator line
+            Container(
+              width: 4,
+              decoration: BoxDecoration(
+                color: task.statusColor,
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+            const SizedBox(width: 8),
+            // Main content
             Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    task.id,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.blue,
-                      fontSize: 16,
+              child: Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(8),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.1),
+                      spreadRadius: 1,
+                      blurRadius: 2,
+                      offset: const Offset(0, 1),
                     ),
-                  ),
-                  Text(task.title),
-                  const SizedBox(height: 4),
-                  Row(
-                    children: [
-                      Text(task.assignee),
-                      if (task.isHighPriority)
-                        const Padding(
-                          padding: EdgeInsets.only(left: 8),
-                          child: Text(
-                            "High Priority",
-                            style: TextStyle(
-                              color: Colors.red,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                    ],
-                  ),
-                  const SizedBox(height: 8),
-                  if (task.status != TaskStatus.completed)
+                  ],
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Header row with title and status
                     Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        GestureDetector(
-                          onTap: onEditDate,
-                          child: Row(
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text("Start: ${formatDate(task.startDate)}"),
-                              if (task.status == TaskStatus.notStarted)
-                                const Padding(
-                                  padding: EdgeInsets.only(left: 4),
-                                  child: Icon(Icons.edit, size: 16),
+                              Row(
+                                children: [
+                                  Text(
+                                    task.id,
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w600,
+                                      color:
+                                          task.status == TaskStatus.completed
+                                              ? Colors.grey
+                                              : Colors.blue,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 6),
+                                  const Icon(
+                                    Icons.more_vert,
+                                    size: 16,
+                                    color: Colors.grey,
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 2),
+                              Text(
+                                task.title,
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                  color:
+                                      task.status == TaskStatus.completed
+                                          ? Colors.grey
+                                          : Colors.black87,
                                 ),
+                              ),
+                              const SizedBox(height: 6),
+                              Row(
+                                children: [
+                                  Text(
+                                    task.assignee,
+                                    style: const TextStyle(
+                                      fontSize: 14,
+                                      color: Colors.black87,
+                                    ),
+                                  ),
+                                  if (task.priority == TaskPriority.high) ...[
+                                    const SizedBox(width: 6),
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 6,
+                                        vertical: 1,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: Colors.red.withOpacity(0.1),
+                                        borderRadius: BorderRadius.circular(4),
+                                      ),
+                                      child: const Text(
+                                        'High Priority',
+                                        style: TextStyle(
+                                          fontSize: 11,
+                                          color: Colors.red,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ],
+                              ),
                             ],
                           ),
                         ),
+                        // Right side status and date
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            if (task.status != TaskStatus.completed &&
+                                task.overdueText.isNotEmpty)
+                              Text(
+                                task.overdueText,
+                                style: TextStyle(
+                                  fontSize: 11,
+                                  color:
+                                      task.overdueText.contains('Due')
+                                          ? Colors.orange
+                                          : Colors.red,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            if (task.status == TaskStatus.completed)
+                              Text(
+                                'Completed: ${DateFormatter.formatDate(task.completedDate ?? DateTime.now())}',
+                                style: const TextStyle(
+                                  fontSize: 11,
+                                  color: Colors.green,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            const SizedBox(height: 2),
+                            Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  'Start${task.status == TaskStatus.completed ? 'ed' : ''}: ${DateFormatter.formatDate(task.startDate)}',
+                                  style: const TextStyle(
+                                    fontSize: 11,
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                                if (task.status == TaskStatus.notStarted ||
+                                    (task.status == TaskStatus.started &&
+                                        onDateChanged != null)) ...[
+                                  const SizedBox(width: 3),
+                                  GestureDetector(
+                                    onTap: () => _showDatePicker(context),
+                                    child: const Icon(
+                                      Icons.edit,
+                                      size: 12,
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                                ],
+                              ],
+                            ),
+                          ],
+                        ),
                       ],
-                    )
-                  else
-                    Text(
-                      "Completed: ${formatDate(task.startDate)}",
-                      style: const TextStyle(color: Colors.green),
                     ),
-                ],
+                    const SizedBox(height: 8),
+                    // Action buttons
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        if (task.status == TaskStatus.notStarted &&
+                            onStartTask != null)
+                          Row(
+                            children: [
+                              const Icon(
+                                Icons.play_circle,
+                                size: 14,
+                                color: Colors.blue,
+                              ),
+                              const SizedBox(width: 3),
+                              GestureDetector(
+                                onTap: onStartTask,
+                                child: const Text(
+                                  'Start Task',
+                                  style: TextStyle(
+                                    color: Colors.blue,
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 13,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        if (task.status == TaskStatus.started &&
+                            onMarkComplete != null)
+                          Row(
+                            children: [
+                              const Icon(
+                                Icons.check_circle,
+                                size: 14,
+                                color: Colors.green,
+                              ),
+                              const SizedBox(width: 3),
+                              GestureDetector(
+                                onTap: onMarkComplete,
+                                child: const Text(
+                                  'Mark as complete',
+                                  style: TextStyle(
+                                    color: Colors.green,
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 13,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                StatusBadge(label: statusText, color: getStatusColor()),
-                const SizedBox(height: 6),
-                if (task.status == TaskStatus.notStarted)
-                  TextButton.icon(
-                    icon: const Icon(Icons.play_arrow),
-                    label: const Text("Start Task"),
-                    onPressed: onStart,
-                  )
-                else if (task.status == TaskStatus.started)
-                  TextButton.icon(
-                    icon: const Icon(Icons.check),
-                    label: const Text("Mark as Complete"),
-                    onPressed: onComplete,
-                  ),
-              ],
             ),
           ],
         ),
       ),
     );
+  }
+
+  void _showDatePicker(BuildContext context) {
+    if (onDateChanged == null) return;
+
+    showDatePicker(
+      context: context,
+      initialDate: task.startDate,
+      firstDate: DateTime.now().subtract(const Duration(days: 365)),
+      lastDate: DateTime.now().add(const Duration(days: 365)),
+    ).then((selectedDate) {
+      if (selectedDate != null) {
+        onDateChanged!(selectedDate);
+      }
+    });
   }
 }

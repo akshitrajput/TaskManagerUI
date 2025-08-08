@@ -1,133 +1,101 @@
 import 'package:flutter/material.dart';
-import '../models/task_model.dart';
+import '../models/task.dart';
 import '../widgets/task_card.dart';
+import '../services/storage_service.dart';
 
 class TaskListScreen extends StatefulWidget {
-  const TaskListScreen({super.key});
+  const TaskListScreen({Key? key}) : super(key: key);
 
   @override
   State<TaskListScreen> createState() => _TaskListScreenState();
 }
 
 class _TaskListScreenState extends State<TaskListScreen> {
-  List<Task> tasks = [
-    Task(
-      id: 'Order-1043',
-      title: 'Arrange Pickup',
-      subtitle: '',
-      assignee: 'Sandhya',
-      isHighPriority: true,
-      startDate: DateTime.now().subtract(const Duration(hours: 10)),
-      status: TaskStatus.started,
-    ),
-    Task(
-      id: 'Entity-2559',
-      title: 'Adhoc Task',
-      subtitle: '',
-      assignee: 'Arman',
-      isHighPriority: false,
-      startDate: DateTime.now().subtract(const Duration(hours: 16)),
-      status: TaskStatus.started,
-    ),
-    Task(
-      id: 'Order-1020',
-      title: 'Collect Payment',
-      subtitle: '',
-      assignee: 'Sandhya',
-      isHighPriority: true,
-      startDate: DateTime.now().subtract(const Duration(hours: 17)),
-      status: TaskStatus.started,
-    ),
-    Task(
-      id: 'Order-194',
-      title: 'Arrange Delivery',
-      subtitle: '',
-      assignee: 'Prashant',
-      isHighPriority: false,
-      startDate: DateTime.now().subtract(const Duration(days: 1)),
-      status: TaskStatus.completed,
-    ),
-    Task(
-      id: 'Entity-2184',
-      title: 'Share Company Profile',
-      subtitle: '',
-      assignee: 'Asif Khan K',
-      isHighPriority: false,
-      startDate: DateTime.now().subtract(const Duration(days: 2)),
-      status: TaskStatus.completed,
-    ),
-    Task(
-      id: 'Entity-472',
-      title: 'Add Followup',
-      subtitle: '',
-      assignee: 'Avik',
-      isHighPriority: false,
-      startDate: DateTime.now().subtract(const Duration(days: 3)),
-      status: TaskStatus.completed,
-    ),
-    Task(
-      id: 'Enquiry-3563',
-      title: 'Convert Enquiry',
-      subtitle: '',
-      assignee: 'Prashant',
-      isHighPriority: false,
-      startDate: DateTime.now().add(const Duration(days: 2)),
-      status: TaskStatus.notStarted,
-    ),
-    Task(
-      id: 'Order-176',
-      title: 'Arrange Pickup',
-      subtitle: '',
-      assignee: 'Prashant',
-      isHighPriority: true,
-      startDate: DateTime.now().add(const Duration(days: 1)),
-      status: TaskStatus.notStarted,
-    ),
-  ];
+  List<Task> tasks = [];
+  bool isLoading = true;
 
-  void _startTask(Task task) {
+  @override
+  void initState() {
+    super.initState();
+    _loadTasks();
+  }
+
+  Future<void> _loadTasks() async {
+    final loadedTasks = await StorageService.loadTasks();
     setState(() {
-      task.status = TaskStatus.started;
+      tasks = loadedTasks;
+      isLoading = false;
     });
   }
 
-  void _completeTask(Task task) {
-    setState(() {
-      task.status = TaskStatus.completed;
-    });
-  }
-
-  void _editTaskDate(Task task) async {
-    final newDate = await showDatePicker(
-      context: context,
-      initialDate: task.startDate,
-      firstDate: DateTime.now().subtract(const Duration(days: 30)),
-      lastDate: DateTime.now().add(const Duration(days: 365)),
-    );
-
-    if (newDate != null) {
-      setState(() {
-        task.startDate = newDate;
-      });
-    }
+  Future<void> _saveTasks() async {
+    await StorageService.saveTasks(tasks);
   }
 
   @override
   Widget build(BuildContext context) {
+    if (isLoading) {
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    }
+
     return Scaffold(
-      appBar: AppBar(title: const Text('Task Manager')),
+      backgroundColor: Colors.grey[50],
+      appBar: AppBar(
+        title: const Text(
+          'Tasks',
+          style: TextStyle(fontWeight: FontWeight.w600, color: Colors.black87),
+        ),
+        backgroundColor: Colors.white,
+        elevation: 1,
+        iconTheme: const IconThemeData(color: Colors.black87),
+      ),
       body: ListView.builder(
+        padding: const EdgeInsets.symmetric(vertical: 4),
         itemCount: tasks.length,
         itemBuilder: (context, index) {
           final task = tasks[index];
           return TaskCard(
             task: task,
-            onStart: () => _startTask(task),
-            onComplete: () => _completeTask(task),
-            onEditDate: () => _editTaskDate(task),
+            onStartTask:
+                task.status == TaskStatus.notStarted
+                    ? () => _startTask(index)
+                    : null,
+            onMarkComplete:
+                task.status == TaskStatus.started
+                    ? () => _markTaskComplete(index)
+                    : null,
+            onDateChanged:
+                (task.status == TaskStatus.notStarted ||
+                        task.status == TaskStatus.started)
+                    ? (newDate) => _updateTaskDate(index, newDate)
+                    : null,
           );
         },
       ),
     );
+  }
+
+  void _startTask(int index) {
+    setState(() {
+      tasks[index] = tasks[index].copyWith(status: TaskStatus.started);
+    });
+    _saveTasks();
+  }
+
+  void _markTaskComplete(int index) {
+    setState(() {
+      tasks[index] = tasks[index].copyWith(
+        status: TaskStatus.completed,
+        completedDate: DateTime.now(),
+      );
+    });
+    _saveTasks();
+  }
+
+  void _updateTaskDate(int index, DateTime newDate) {
+    setState(() {
+      tasks[index] = tasks[index].copyWith(startDate: newDate);
+    });
+    _saveTasks();
   }
 }
