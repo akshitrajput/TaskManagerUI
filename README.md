@@ -1,16 +1,35 @@
-# taskmanager
+Task Manager App
+A Flutter-based task management application with local storage and intuitive task status tracking.
 
-A new Flutter project.
+📱 Demo
+<!-- Add your screenshots here --> <p align="center"> <img src="screenshots/app_demo.gif" width="250" alt="App Demo"/> </p>
+🛠️ Tech Stack
+<p align="center"> <img src="https://img.shields.io/badge/Flutter-02569B?style=for-the-badge&logo=flutter&logoColor=white" alt="Flutter"/> <img src="https://img.shields.io/badge/Dart-0175C2?style=for-the-badge&logo=dart&logoColor=white" alt="Dart"/> <img src="https://img.shields.io/badge/SharedPreferences-FF6B6B?style=for-the-badge&logo=database&logoColor=white" alt="Local Storage"/> </p>
+✨ Features
+Task status management (Not Started → In Progress → Completed)
 
-## Getting Started
+Local data persistence with SharedPreferences
 
-This project is a starting point for a Flutter application.
+Interactive task details popup
 
-A few resources to get you started if this is your first Flutter project:
+Date picker for task scheduling
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+Priority-based task ordering
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Color-coded status indicators
+
+🚀 Setup
+bash
+git clone <repo-url>
+cd taskmanager
+flutter pub get
+flutter run
+📁 Structure
+text
+lib/
+├── models/task.dart
+├── services/storage_service.dart
+├── widgets/task_card.dart
+├── screens/task_list_screen.dart
+└── utils/date_formatter.dart
+Built with Flutter for cross-platform compatibility and smooth user experience.
