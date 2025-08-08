@@ -32,11 +32,29 @@ class _TaskListScreenState extends State<TaskListScreen> {
     await StorageService.saveTasks(tasks);
   }
 
+  List<Task> get orderedTasks {
+    final List<Task> orderedList = [];
+
+    orderedList.addAll(
+      tasks.where((task) => task.status == TaskStatus.started),
+    );
+    orderedList.addAll(
+      tasks.where((task) => task.status == TaskStatus.completed),
+    );
+    orderedList.addAll(
+      tasks.where((task) => task.status == TaskStatus.notStarted),
+    );
+
+    return orderedList;
+  }
+
   @override
   Widget build(BuildContext context) {
     if (isLoading) {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
+
+    final orderedTaskList = orderedTasks;
 
     return Scaffold(
       backgroundColor: Colors.grey[50],
@@ -51,23 +69,25 @@ class _TaskListScreenState extends State<TaskListScreen> {
       ),
       body: ListView.builder(
         padding: const EdgeInsets.symmetric(vertical: 4),
-        itemCount: tasks.length,
+        itemCount: orderedTaskList.length,
         itemBuilder: (context, index) {
-          final task = tasks[index];
+          final task = orderedTaskList[index];
+          final originalIndex = tasks.indexOf(task);
+
           return TaskCard(
             task: task,
             onStartTask:
                 task.status == TaskStatus.notStarted
-                    ? () => _startTask(index)
+                    ? () => _startTask(originalIndex)
                     : null,
             onMarkComplete:
                 task.status == TaskStatus.started
-                    ? () => _markTaskComplete(index)
+                    ? () => _markTaskComplete(originalIndex)
                     : null,
             onDateChanged:
                 (task.status == TaskStatus.notStarted ||
                         task.status == TaskStatus.started)
-                    ? (newDate) => _updateTaskDate(index, newDate)
+                    ? (newDate) => _updateTaskDate(originalIndex, newDate)
                     : null,
           );
         },
