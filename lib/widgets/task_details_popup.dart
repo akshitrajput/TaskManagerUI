@@ -425,7 +425,7 @@ class TaskDetailPopup extends StatelessWidget {
     ).then((selectedDate) {
       if (selectedDate != null) {
         onDateChanged!(selectedDate);
-        Navigator.of(context).pop(); // Close popup after date change
+        Navigator.of(context).pop();
       }
     });
   }

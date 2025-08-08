@@ -5,14 +5,12 @@ import '../models/task.dart';
 class StorageService {
   static const String _tasksKey = 'tasks_data';
 
-  // Save tasks to local storage
   static Future<void> saveTasks(List<Task> tasks) async {
     final prefs = await SharedPreferences.getInstance();
     final tasksJson = tasks.map((task) => task.toJson()).toList();
     await prefs.setString(_tasksKey, jsonEncode(tasksJson));
   }
 
-  // Load tasks from local storage
   static Future<List<Task>> loadTasks() async {
     final prefs = await SharedPreferences.getInstance();
     final tasksString = prefs.getString(_tasksKey);
@@ -29,7 +27,6 @@ class StorageService {
     }
   }
 
-  // Default tasks for first time users
   static List<Task> _getDefaultTasks() {
     return [
       Task(
@@ -38,7 +35,7 @@ class StorageService {
         description: 'Arrange pickup for customer order',
         assignee: 'Sandhya',
         status: TaskStatus.started,
-        startDate: DateTime(2024, 8, 10),
+        startDate: DateTime(2025, 8, 1),
         priority: TaskPriority.high,
       ),
       Task(
@@ -47,7 +44,7 @@ class StorageService {
         description: 'Complete adhoc task assignment',
         assignee: 'Arman',
         status: TaskStatus.started,
-        startDate: DateTime(2024, 8, 12),
+        startDate: DateTime(2025, 7, 28),
       ),
       Task(
         id: 'Order-1020',
@@ -55,7 +52,7 @@ class StorageService {
         description: 'Collect pending payment from customer',
         assignee: 'Sandhya',
         status: TaskStatus.started,
-        startDate: DateTime(2024, 8, 15),
+        startDate: DateTime(2025, 8, 4),
         priority: TaskPriority.high,
       ),
       Task(
@@ -64,8 +61,8 @@ class StorageService {
         description: 'Arrange delivery for completed order',
         assignee: 'Prashant',
         status: TaskStatus.completed,
-        startDate: DateTime(2024, 8, 20),
-        completedDate: DateTime(2024, 8, 21),
+        startDate: DateTime(2025, 8, 2),
+        completedDate: DateTime(2025, 8, 8),
       ),
       Task(
         id: 'Entity-2184',
@@ -73,8 +70,8 @@ class StorageService {
         description: 'Share company profile with client',
         assignee: 'Asif Khan K',
         status: TaskStatus.completed,
-        startDate: DateTime(2024, 8, 22),
-        completedDate: DateTime(2024, 8, 23),
+        startDate: DateTime(2025, 7, 25),
+        completedDate: DateTime(2025, 8, 7),
       ),
       Task(
         id: 'Entity-472',
@@ -82,8 +79,8 @@ class StorageService {
         description: 'Add followup notes for client meeting',
         assignee: 'Avik',
         status: TaskStatus.completed,
-        startDate: DateTime(2024, 8, 25),
-        completedDate: DateTime(2024, 8, 26),
+        startDate: DateTime(2025, 7, 12),
+        completedDate: DateTime(2025, 7, 15),
       ),
       Task(
         id: 'Enquiry-3563',
@@ -91,7 +88,7 @@ class StorageService {
         description: 'Convert lead enquiry to sale',
         assignee: 'Prashant',
         status: TaskStatus.notStarted,
-        startDate: DateTime(2024, 8, 28),
+        startDate: DateTime(2025, 8, 12),
       ),
       Task(
         id: 'Order-176',
@@ -99,7 +96,7 @@ class StorageService {
         description: 'Arrange pickup for new order',
         assignee: 'Prashant',
         status: TaskStatus.notStarted,
-        startDate: DateTime(2024, 9, 1),
+        startDate: DateTime(2025, 8, 7),
         priority: TaskPriority.high,
       ),
     ];

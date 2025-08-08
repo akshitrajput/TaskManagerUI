@@ -11,8 +11,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Task Manager',
-      theme: ThemeData(primarySwatch: Colors.blue, fontFamily: 'Poppins'),
+      title: 'TaskManager UI',
+      theme: ThemeData(primarySwatch: Colors.grey, fontFamily: 'Poppins'),
       home: const TaskListScreen(),
       debugShowCheckedModeBanner: false,
     );

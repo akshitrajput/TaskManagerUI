@@ -279,8 +279,8 @@ class TaskCard extends StatelessWidget {
     showDatePicker(
       context: context,
       initialDate: task.startDate,
-      firstDate: DateTime.now().subtract(const Duration(days: 365)),
-      lastDate: DateTime.now().add(const Duration(days: 365)),
+      firstDate: DateTime(2025, 1, 1),
+      lastDate: DateTime(2025, 12, 31),
     ).then((selectedDate) {
       if (selectedDate != null) {
         onDateChanged!(selectedDate);

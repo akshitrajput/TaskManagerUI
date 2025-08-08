@@ -57,40 +57,54 @@ class _TaskListScreenState extends State<TaskListScreen> {
     final orderedTaskList = orderedTasks;
 
     return Scaffold(
-      backgroundColor: Colors.grey[50],
-      appBar: AppBar(
-        title: const Text(
-          'Tasks',
-          style: TextStyle(fontWeight: FontWeight.w600, color: Colors.black87),
-        ),
-        backgroundColor: Colors.white,
-        elevation: 1,
-        iconTheme: const IconThemeData(color: Colors.black87),
-      ),
-      body: ListView.builder(
-        padding: const EdgeInsets.symmetric(vertical: 4),
-        itemCount: orderedTaskList.length,
-        itemBuilder: (context, index) {
-          final task = orderedTaskList[index];
-          final originalIndex = tasks.indexOf(task);
+      backgroundColor: Colors.white,
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            title: const Text(
+              'Tasks',
+              style: TextStyle(
+                fontWeight: FontWeight.w600,
+                color: Colors.black87,
+              ),
+            ),
+            backgroundColor: Colors.white,
+            surfaceTintColor: Colors.white,
+            foregroundColor: Colors.black87,
+            elevation: 1,
+            iconTheme: const IconThemeData(color: Colors.black87),
+            floating: true,
+            snap: true,
+            pinned: false,
+          ),
 
-          return TaskCard(
-            task: task,
-            onStartTask:
-                task.status == TaskStatus.notStarted
-                    ? () => _startTask(originalIndex)
-                    : null,
-            onMarkComplete:
-                task.status == TaskStatus.started
-                    ? () => _markTaskComplete(originalIndex)
-                    : null,
-            onDateChanged:
-                (task.status == TaskStatus.notStarted ||
-                        task.status == TaskStatus.started)
-                    ? (newDate) => _updateTaskDate(originalIndex, newDate)
-                    : null,
-          );
-        },
+          SliverPadding(
+            padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 6),
+            sliver: SliverList(
+              delegate: SliverChildBuilderDelegate((context, index) {
+                final task = orderedTaskList[index];
+                final originalIndex = tasks.indexOf(task);
+
+                return TaskCard(
+                  task: task,
+                  onStartTask:
+                      task.status == TaskStatus.notStarted
+                          ? () => _startTask(originalIndex)
+                          : null,
+                  onMarkComplete:
+                      task.status == TaskStatus.started
+                          ? () => _markTaskComplete(originalIndex)
+                          : null,
+                  onDateChanged:
+                      (task.status == TaskStatus.notStarted ||
+                              task.status == TaskStatus.started)
+                          ? (newDate) => _updateTaskDate(originalIndex, newDate)
+                          : null,
+                );
+              }, childCount: orderedTaskList.length),
+            ),
+          ),
+        ],
       ),
     );
   }

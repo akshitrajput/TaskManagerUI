@@ -47,7 +47,6 @@ class Task {
     );
   }
 
-  // JSON serialization
   Map<String, dynamic> toJson() {
     return {
       'id': id,
@@ -98,7 +97,7 @@ class Task {
       case TaskStatus.notStarted:
         return Colors.grey;
       case TaskStatus.started:
-        return Colors.red;
+        return Colors.blue;
       case TaskStatus.completed:
         return Colors.green;
     }
