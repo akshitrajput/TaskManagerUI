@@ -18,18 +18,26 @@ Priority-based task ordering
 
 Color-coded status indicators
 
-<h2>🚀 Setup</h2>
-bash
+## 🚀 Setup
+
+```bash
 git clone <repo-url>
 cd taskmanager
 flutter pub get
 flutter run
-📁 Structure
+
+## 📁 Structure
 text
 lib/
-├── models/task.dart
-├── services/storage_service.dart
-├── widgets/task_card.dart
-├── screens/task_list_screen.dart
-└── utils/date_formatter.dart
+├── models/
+│   └── task.dart
+├── services/
+│   └── storage_service.dart
+├── widgets/
+│   └── task_card.dart
+├── screens/
+│   └── task_list_screen.dart
+└── utils/
+    └── date_formatter.dart
+
 Built with Flutter for cross-platform compatibility and smooth user experience.
