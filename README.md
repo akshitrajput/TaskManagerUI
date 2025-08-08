@@ -1,11 +1,11 @@
-Task Manager App
+<h1>Task Manager App</h1>
 A Flutter-based task management application with local storage and intuitive task status tracking.
 
-📱 Demo
-<!-- Add your screenshots here --> <p align="center"> <img src="screenshots/app_demo.gif" width="250" alt="App Demo"/> </p>
-🛠️ Tech Stack
+<h2>📱 Demo</h2>
+<p align="center"> <img src="screenshots/app_demo.gif" width="250" alt="App Demo"/> </p>
+<h2>🛠️ Tech Stack</h2>
 <p align="center"> <img src="https://img.shields.io/badge/Flutter-02569B?style=for-the-badge&logo=flutter&logoColor=white" alt="Flutter"/> <img src="https://img.shields.io/badge/Dart-0175C2?style=for-the-badge&logo=dart&logoColor=white" alt="Dart"/> <img src="https://img.shields.io/badge/SharedPreferences-FF6B6B?style=for-the-badge&logo=database&logoColor=white" alt="Local Storage"/> </p>
-✨ Features
+<h2>✨ Features</h2>
 Task status management (Not Started → In Progress → Completed)
 
 Local data persistence with SharedPreferences
@@ -18,7 +18,7 @@ Priority-based task ordering
 
 Color-coded status indicators
 
-🚀 Setup
+<h2>🚀 Setup</h2>
 bash
 git clone <repo-url>
 cd taskmanager
